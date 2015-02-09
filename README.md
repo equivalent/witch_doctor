@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/equivalent/witch_doctor.svg)](https://travis-ci.org/equivalent/witch_doctor)
+
 # Witch Doctor
 
 Rails engine that provides simple API so that external antivirus
