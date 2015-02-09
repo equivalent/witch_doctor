@@ -49,11 +49,24 @@ VirusScan.token = Rails
   .fetch('token')
 ```
 
+
 ```sh
 bundle install
 rake db:migrate
 ```
 
+## Optional
+
+**Add helper**
+
+```ruby
+# app/helpers/application_helper.rb
+include WitchDoctor::ApplicationHelper
+```
+
+
+
+# Overiding WitchDoctor Examples
 
 ## extending controller
 
@@ -71,4 +84,22 @@ module WitchDoctor
   end
 end
 WitchDoctor::VirusScansController.send(:include,WitchDoctor::MyAppControllerExtension)
+```
+
+## extending Antivirus helper
+
+```ruby
+include WitchDoctor::ApplicationHelper
+module ApplicationHelper
+  alias_method :antivirus_without_view_requirement_respect, :antivirus
+  alias_method :antivirus, :antivirus_with_view_requirement_respect
+
+  def antivirus_with_view_requirement_respect(decorated_resource, mount_point)
+    if decorated_resource.send("view_requires_#{mount_point}_virus_check?")
+      antivirus_without_view_requirement_respect(decorated_resource, mount_point)
+    else
+      yield
+    end
+  end
+end
 ```
