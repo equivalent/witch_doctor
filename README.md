@@ -64,6 +64,14 @@ rake db:migrate
 include WitchDoctor::ApplicationHelper
 ```
 
+after this you can use the `antivirus` helper
+
+```haml
+= antivirus(@document, :attachment) do
+  - link_to @document.attachment_name, @document.attachment.url
+```
+
+This will show the link when `VirusScan` for `@document` is `Clean`
 
 
 # Overiding WitchDoctor Examples
