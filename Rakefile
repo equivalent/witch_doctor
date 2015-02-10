@@ -27,21 +27,16 @@ require 'rspec/core'
 require 'rspec/core/rake_task'
 
 desc "Run all specs in spec directory (excluding plugin specs)"
-RSpec::Core::RakeTask.new(:spec => 'app:db:test:prepare')
+RSpec::Core::RakeTask.new(:spec => 'app:prepare_test_db')
+
+namespace :app do
+  task :prepare_test_db do
+    Rails.env = "test"
+    Rake::Task["app:db:create"].invoke
+    Rake::Task["app:db:migrate"].invoke
+  end
+end
 
 task :default => :spec
 
-
 Bundler::GemHelper.install_tasks
-
-require 'rake/testtask'
-
-Rake::TestTask.new(:test) do |t|
-  t.libs << 'lib'
-  t.libs << 'test'
-  t.pattern = 'test/**/*_test.rb'
-  t.verbose = false
-end
-
-
-task :default => :test
