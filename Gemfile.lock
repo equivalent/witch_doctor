@@ -128,7 +128,7 @@ PLATFORMS
 
 DEPENDENCIES
   capybara (>= 2.4.0)
-  database_cleaner
+  database_cleaner (~> 0.7)
   factory_girl_rails (~> 4.5)
   jquery-rails
   rspec-rails (~> 3.2)
