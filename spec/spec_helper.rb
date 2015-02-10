@@ -36,3 +36,7 @@ RSpec.configure do |config|
     DatabaseCleaner.clean
   end
 end
+
+# test-unit gem (required by Rails 3) has nasty habit executing itsef automaticly
+# after rspec is done
+Test::Unit::AutoRunner.need_auto_run = false if defined?(Test::Unit::AutoRunner)
