@@ -25,4 +25,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency "capybara", '>= 2.4.0'
   s.add_development_dependency "factory_girl_rails", '~> 4.5'
   s.add_development_dependency "database_cleaner", '~> 0.7'
+  s.add_development_dependency "codeclimate-test-reporter"
 end

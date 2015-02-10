@@ -1,9 +1,13 @@
 ENV["RAILS_ENV"] = "test"
 
+require "codeclimate-test-reporter"
 require File.expand_path("../dummy/config/environment.rb",  __FILE__)
 require 'rspec/rails'
 require 'database_cleaner'
 require 'factory_girl_rails'
+
+
+CodeClimate::TestReporter.start
 
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
