@@ -16,12 +16,7 @@ module WitchDoctor
     end
 
     def checked?
-      case latest_scan.scan_result
-      when *RESULTS
-        true
-      else
-        false
-      end
+      latest_scan.scan_result.present?
     end
 
     def infected?
