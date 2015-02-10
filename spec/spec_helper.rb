@@ -1,6 +1,8 @@
 ENV["RAILS_ENV"] ||= "test"
 
 require "codeclimate-test-reporter"
+CodeClimate::TestReporter.start
+
 require File.expand_path("../dummy/config/environment.rb",  __FILE__)
 require 'rspec/rails'
 require 'database_cleaner'
@@ -15,7 +17,6 @@ unless FactoryGirl.factories.registered?(:document)
   Dir[File.join(ENGINE_RAILS_ROOT, "spec/factories/**/*.rb")].each {|f| require f }
 end
 
-CodeClimate::TestReporter.start
 
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
