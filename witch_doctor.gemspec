@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.homepage    = "https://github.com/equivalent/witch_doctor"
   s.summary     = "Rails engine for virus scaning"
   s.description = "Rails engine that provides simple API so that external antivirus " +
-                  "script can pull down files that need to be scaned and update their " +
+                  "script can pull down files that need to be scanned and update their " +
                   "results."
 
   s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.md"]

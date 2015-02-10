@@ -29,12 +29,12 @@ module WitchDoctor
     end
 
     def error?
-      throw :file_not_scaned unless checked?
+      throw :file_not_scanned unless checked?
       latest_scan.scan_result == 'FileDownloadError'
     end
 
     def clean?
-      throw :file_not_scaned unless checked?
+      throw :file_not_scanned unless checked?
       latest_scan.scan_result == 'Clean'
     end
   end
