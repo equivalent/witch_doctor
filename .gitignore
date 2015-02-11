@@ -7,3 +7,4 @@ spec/dummy/tmp/
 spec/dummy/.sass-cache
 .ruby-version
 .ruby-gemset
+tags

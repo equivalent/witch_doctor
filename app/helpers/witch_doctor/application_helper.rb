@@ -1,7 +1,7 @@
 module WitchDoctor
   module ApplicationHelper
     def antivirus(resource, mount_point)
-      catch(:file_not_scaned) do
+      catch(:file_not_scanned) do
         if (av = resource.send("#{mount_point}_antivirus")) && av.clean?
           yield
         elsif av.error?

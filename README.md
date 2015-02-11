@@ -5,7 +5,7 @@
 # Witch Doctor
 
 Rails engine that provides simple API so that external antivirus
-script can pull down files that need to be scaned and update their
+script can pull down files that need to be scanned and update their
 results.
 
 
