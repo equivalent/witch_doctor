@@ -9,9 +9,9 @@ script can pull down files that need to be scaned and update their
 results.
 
 
-Engine was designed to work along [virus_scan_service gem](https://github.com/equivalent/virus_scan_service), 
-to witch it provide list of VirusScans, that are created upon resource 
-create / update that change a file.
+Engine was designed to work alongside [virus_scan_service gem](https://github.com/equivalent/virus_scan_service),
+to which it provides a list of VirusScans. These are created upon file resource
+create / update events.
 
 
 ## CarrierWave
