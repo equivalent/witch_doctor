@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    witch_doctor (0.0.2)
+    witch_doctor (0.0.3)
       rails (~> 3.2)
 
 GEM
