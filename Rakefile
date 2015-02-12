@@ -32,6 +32,7 @@ RSpec::Core::RakeTask.new(:spec => 'app:prepare_test_db')
 namespace :app do
   task :prepare_test_db do
     Rails.env = "test"
+    ENV['RAILS_ENV'] = 'test'
     Rake::Task["app:db:create"].invoke
     Rake::Task["app:db:migrate"].invoke
   end
