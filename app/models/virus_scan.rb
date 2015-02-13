@@ -9,8 +9,8 @@ class VirusScan < ActiveRecord::Base
     end
   end
 
-  attr_accessible :scan_result, :scanned_at, :mount_point
-  attr_accessible :scan_result, as: :scan_update
+#  attr_accessible :scan_result, :scanned_at, :mount_point
+#  attr_accessible :scan_result, as: :scan_update
 
   belongs_to :resource, polymorphic: true
   scope :not_scanned, -> { where scan_result: nil }

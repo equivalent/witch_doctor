@@ -59,7 +59,7 @@ RSpec.describe WitchDoctor::VirusScansController, type: :controller do
         before { trigger }
         let(:format) { 'html' }
         it{ expect(response.status).to eq 406 }
-        it{ expect(response.body).to eq ' ' }
+        it{ expect(response.body).to eq %q{{"errors":{"request":["Incorrect format"]}}} }
       end
     end
   end
@@ -108,14 +108,14 @@ RSpec.describe WitchDoctor::VirusScansController, type: :controller do
         expect(response.body).to eq(virus_scan.to_json)
       end
 
-      context 'sending restricted params' do
-        let(:virus_scan_params) { { scan_result: 'Clean', mount_point: 'abc' } }
+      context 'sending missing params' do
+        let(:virus_scan_params) { {} }
         it do
           expect do trigger end
             .not_to change { virus_scan.reload.mount_point }
 
           expect(response.status).to eq 406
-          expect(response.body).to eq(%q{{"errors":{"request":["Can't mass-assign protected attributes: mount_point"]}}})
+          expect(response.body).to eq(%q{{"errors":{"request":["param is missing or the value is empty: virus_scan"]}}})
         end
       end
 
