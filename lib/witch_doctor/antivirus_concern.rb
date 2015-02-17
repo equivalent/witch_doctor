@@ -13,7 +13,9 @@ module WitchDoctor
         after_save "schedule_#{mount_point}_virus_scan", if: "schedule_#{mount_point}_virus_scan?"
 
         define_method("schedule_#{mount_point}_virus_scan") do
-          virus_scans.create!(mount_point: mount_point.to_s)
+          virus_scans.create! do |vs|
+            vs.mount_point = mount_point.to_s
+          end
         end
 
         define_method("schedule_#{mount_point}_virus_scan?") do
