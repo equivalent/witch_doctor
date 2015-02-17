@@ -16,7 +16,7 @@ module WitchDoctor
     end
 
     def checked?
-      latest_scan.scan_result.present?
+      latest_scan.try(:scan_result).present?
     end
 
     def infected?
