@@ -29,7 +29,7 @@ In your application:
 # Gemfile
 
 # ...
-gem 'witch_doctor', github: 'equivalent/witch_doctor'
+gem 'witch_doctor'
 
 ```
 
