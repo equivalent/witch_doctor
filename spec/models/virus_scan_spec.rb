@@ -5,7 +5,7 @@ describe VirusScan do
     let!(:virus_scan) { create :virus_scan }
 
     context 'after updating record with scan results' do
-      before { virus_scan.update_attributes({scan_result: 'Clean'}, as: :scan_update ) }
+      before { virus_scan.update_attributes({scan_result: 'Clean'}) }
 
       it 'should be generate' do
         expect(virus_scan.scanned_at).not_to be nil

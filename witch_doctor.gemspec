@@ -18,14 +18,12 @@ Gem::Specification.new do |s|
   s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.md"]
   s.test_files = Dir["spec/**/*"]
 
-  s.add_dependency "rails", "~> 3.2"
+  s.add_development_dependency "rails", "~> 4.0.0"
 
   s.add_development_dependency "sqlite3"
   s.add_development_dependency "rspec-rails", '~> 3.2'
   s.add_development_dependency "capybara", '>= 2.4.0'
   s.add_development_dependency "factory_girl_rails", '~> 4.5'
-  s.add_development_dependency "database_cleaner", '~> 0.7'
+  s.add_development_dependency "database_cleaner", '~> 1.1.0'
   s.add_development_dependency "codeclimate-test-reporter"
-  s.add_development_dependency "test-unit", '~> 3.0' # ruby 2.2 droped test-unit but
-                                                     # rails 3.x requires it
 end
