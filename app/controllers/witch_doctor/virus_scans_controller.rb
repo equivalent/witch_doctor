@@ -74,5 +74,10 @@ module WitchDoctor
     def incorrect_format
       render json: { errors: { request: ["Incorrect format"] } }, status: 406
     end
+
+    # when used in app with ActiveModel::Serializer this will prevent it to do root JSON
+    def default_serializer_options
+        {root: false}
+    end
   end
 end

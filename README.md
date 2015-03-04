@@ -115,3 +115,12 @@ module ApplicationHelper
   end
 end
 ```
+
+# working along ActiveModel::Serializer
+
+You can use it in an application with ActiveModel::Serializer
+
+the reason why the gem is not using [ActiveModel::Serializer](https://github.com/rails-api/active_model_serializers)
+by default is that I didn't want to introduce extra dependencies.
+This engine is trying to be really lightweight.
+
