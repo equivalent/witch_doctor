@@ -22,6 +22,13 @@ however it's not a dependancy as long as `:mount_point` responds to
 `url` call (look at `spec/dummy/app/models/document.rb`) for more
 details
 
+## working along `ActiveModel::Serializer`
+
+The reason why the gem is not using [ActiveModel::Serializer](https://github.com/rails-api/active_model_serializers)
+by default is that I didn't want to introduce extra dependencies.
+This engine is trying to be really lightweight.
+
+If you choose to use it in application using ActiveModel::Serializer you should have no problems.
 
 # Setup
 
@@ -116,11 +123,69 @@ module ApplicationHelper
 end
 ```
 
-# working along ActiveModel::Serializer
+# Testing
 
-You can use it in an application with ActiveModel::Serializer
+The gem/engine is pretty well tested but I recomend everyone to write
+interation test for every application it's introduced to.
 
-the reason why the gem is not using [ActiveModel::Serializer](https://github.com/rails-api/active_model_serializers)
-by default is that I didn't want to introduce extra dependencies.
-This engine is trying to be really lightweight.
+Example with RSpec request test:
+
+```ruby
+require 'spec_helper'
+
+RSpec.describe 'VirusScans', :type => :request do
+
+  before(:all) { WitchDoctor.time_stamper = -> { Time.now.midnight } }
+  after(:all)  { WitchDoctor.time_stamper = (reset_stamper_to_default = nil) }
+
+  let(:token) { '1234' }
+  let!(:virus_scan) { FactoryGirl.create(:document).virus_scans.last }
+
+  describe 'GET index' do
+    before do
+      get "/wd/virus_scans", token: token, format: 'json'
+    end
+
+    it 'responds with success' do
+      expect(response.status).to be 200
+    end
+
+    it 'expect the JSON response to be Array' do
+      expect(JSON.parse response.body).to eq [
+        {
+          "id" => virus_scan.id,
+          "scan_result" => nil,
+          "scanned_at" => nil,
+          "file_url" => "/uploads/documents/#{virus_scan.id}/passport.jpg" # don't care about file storage (tests)
+                                                                           # as virus scans are needed only on s3
+        }
+      ]
+    end
+  end
+
+  describe 'PUT update' do
+    let(:virus_scan_params) { { scan_result: 'Clean' } }
+
+    before do
+
+      put "/wd/virus_scans/#{virus_scan.id}",
+        { format: 'json', virus_scan: virus_scan_params },
+        { 'Authorization' => "Token 1234" }
+    end
+
+    it 'responds with success' do
+      expect(response.status).to be 200
+    end
+
+    it 'expect to update existing virus_scan' do
+      expect(JSON.parse response.body).to eq({
+          "id" => virus_scan.id,
+          "scan_result" => 'Clean',
+          "scanned_at" => Time.now.midnight.utc.iso8601,
+          "file_url" => "/uploads/documents/#{virus_scan.id}/passport.jpg"
+        })
+    end
+  end
+end
+```
 
