@@ -59,7 +59,7 @@ RSpec.describe WitchDoctor::VirusScansController, type: :controller do
         before { trigger }
         let(:format) { 'html' }
         it{ expect(response.status).to eq 406 }
-        it{ expect(response.body).to eq %q{{"errors":{"request":["Incorrect format"]}}} }
+        it{ expect(response.body).to eq %q{{"errors":{"request":["needs to be JSON request"]}}} }
       end
     end
   end
