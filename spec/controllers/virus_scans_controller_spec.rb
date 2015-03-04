@@ -10,6 +10,9 @@ RSpec.describe WitchDoctor::VirusScansController, type: :controller do
       .and_return(false)
   end
 
+  before(:all) { WitchDoctor.time_stamper = -> { Time.now.midnight } }
+  after(:all)  { WitchDoctor.time_stamper = (reset_stamper_to_default = nil) }
+
   describe 'get index' do
     let!(:scheduled_virus_scan1) { create :virus_scan }
     let!(:clean_virus_scan) { create :virus_scan, :clean }
@@ -99,13 +102,19 @@ RSpec.describe WitchDoctor::VirusScansController, type: :controller do
       let(:virus_scan_params) { { scan_result: 'Clean' } }
 
       it 'updates scan result and responds 200 virus_change json body' do
+        expect(response.status).to eq 200
+
         expect do trigger end
           .to change { virus_scan.reload.scan_result }
           .from(nil)
           .to('Clean')
 
-        expect(response.status).to eq 200
-        expect(response.body).to eq(virus_scan.to_json)
+        expect(JSON.parse response.body).to eq({
+            "id" => virus_scan.id,
+            "scan_result" => 'Clean',
+            "scanned_at" => Time.now.midnight.utc.iso8601,
+            "file_url" => "https://my-s3-bucket.dummy/uploads/documents/blank_pdf.pdf"
+          })
       end
 
       context 'sending missing params' do

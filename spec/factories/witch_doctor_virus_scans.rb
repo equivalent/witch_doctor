@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :virus_scan do
-    association :resource, factory: :document
+    association :resource, factory: [:document, :with_attachment]
     mount_point 'attachment'
 
     trait :clean do

@@ -17,9 +17,10 @@ class VirusScan < ActiveRecord::Base
 
   def as_json(options={})
     attributes
-      .slice('id', 'scan_result', 'scanned_at')
+      .slice('id', 'scan_result')
       .tap { |hash|
-        hash.merge!('file_url' => file_url)
+        hash.merge!('file_url'   => file_url,
+                    'scanned_at' => scanned_at.try(:utc).try(:iso8601))
       }
   end
 
@@ -29,7 +30,7 @@ class VirusScan < ActiveRecord::Base
   end
 
   def set_scanned_at
-    self.scanned_at = Time.now
+    self.scanned_at = WitchDoctor.time_stamper.call
   end
 
   def scan_updated?

@@ -33,7 +33,7 @@ describe VirusScan do
   end
 
   describe "as_json" do
-    let(:document) { create :document, attachment: 'blank_pdf.pdf' }
+    let(:document) { create :document, :with_attachment }
     let(:virus_scan) {
       build_stubbed :virus_scan,
         scan_result: nil,
