@@ -2,7 +2,6 @@ require_dependency "witch_doctor/application_controller"
 
 module WitchDoctor
   class VirusScansController < ApplicationController
-    respond_to :json
 
     # ActionController::UnknownFormat not defined in rails 3. Remove this "if" when all apps are rails 4!!
     rescue_from ActionController::UnknownFormat, with: :incorrect_format if defined?(ActionController::UnknownFormat)
@@ -12,7 +11,15 @@ module WitchDoctor
         @virus_scans = VirusScan
           .not_scanned
           .limit(2)
-        respond_with @virus_scans
+
+        respond_to do |format|
+          format.json do
+            render json: @virus_scans
+          end
+          format.html do
+            render json: { errors: { request: ['needs to be JSON request'] } }, status: 406
+          end
+        end
       end
     end
 
