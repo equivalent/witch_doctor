@@ -10,7 +10,7 @@ module WitchDoctor
       authenticate! do
         @virus_scans = VirusScan
           .not_scanned
-          .limit(2)
+          .limit(WitchDoctor.virus_scan_limit)
 
         respond_to do |format|
           format.json do
