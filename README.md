@@ -129,8 +129,8 @@ Make sure you turn of `virus_scan_scheduling_on` option so that gem wont
 create extra records when your tests are running
 
 ```
-# spec/spec_helper
-WitchDoctor.virus_scan_scheduling_on = false
+# config/initializers/witch_doctor.rb
+WitchDoctor.skip_virus_scan_scheduling = true
 ```
 
 turn it on only when needed
@@ -140,11 +140,11 @@ turn it on only when needed
 
 # ...
 before do
-  WitchDoctor.virus_scan_scheduling_on = false
+  WitchDoctor.skip_virus_scan_scheduling = false
 end
 
 after do
-  WitchDoctor.virus_scan_scheduling_on = false
+  WitchDoctor.skip_virus_scan_scheduling = true
 end
 
 # ...
