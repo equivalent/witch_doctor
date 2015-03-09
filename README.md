@@ -125,8 +125,33 @@ end
 
 # Testing
 
-The gem/engine is pretty well tested but I recomend everyone to write
-interation test for every application it's introduced to.
+Make sure you turn of `virus_scan_scheduling_on` option so that gem wont
+create extra records when your tests are running
+
+```
+# spec/spec_helper
+WitchDoctor.virus_scan_scheduling_on = false
+```
+
+turn it on only when needed
+
+```ruby
+# spec/request/virus_scan.rb
+
+# ...
+before do
+  WitchDoctor.virus_scan_scheduling_on = false
+end
+
+after do
+  WitchDoctor.virus_scan_scheduling_on = false
+end
+
+# ...
+```
+
+The gem/engine is pretty well tested but I recomend to write
+interation test for every application it is introduced to.
 
 Example with RSpec request test:
 

@@ -6,11 +6,15 @@ module WitchDoctor
       has_many :virus_scans, as: :resource
     end
 
+    def virus_scan_scheduling_on?
+      WitchDoctor.virus_scan_scheduling_on?
+    end
+
     module ClassMethods
       def schedule_virus_scan(options)
         mount_point = options.fetch(:on)
 
-        after_save "schedule_#{mount_point}_virus_scan", if: "schedule_#{mount_point}_virus_scan?"
+        after_save "schedule_#{mount_point}_virus_scan", if: ["schedule_#{mount_point}_virus_scan?", :virus_scan_scheduling_on?]
 
         define_method("schedule_#{mount_point}_virus_scan") do
           virus_scans.create! do |vs|
