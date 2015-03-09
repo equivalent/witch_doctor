@@ -6,7 +6,7 @@ module WitchDoctor
   TokenNotSpecified = Class.new(StandardError)
 
   class << self
-    attr_writer :time_stamper, :virus_scan_limit, :token, :virus_scan_scheduling_on
+    attr_writer :time_stamper, :virus_scan_limit, :token, :skip_virus_scan_scheduling
 
     def time_stamper
       @time_stamper ||= -> { Time.now }
@@ -20,8 +20,8 @@ module WitchDoctor
       @token || raise(TokenNotSpecified)
     end
 
-    def virus_scan_scheduling_on?
-      @virus_scan_scheduling_on ||= true
+    def skip_virus_scan_scheduling
+      !!@skip_virus_scan_scheduling
     end
   end
 end

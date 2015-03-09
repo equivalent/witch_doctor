@@ -49,4 +49,18 @@ describe VirusScan do
       expect(virus_scan.as_json['scanned_at']).to be nil
     end
   end
+
+  describe '#virus_scan_scheduling_on?' do
+    it 'should be true by default' do
+      expect(Document.new.virus_scan_scheduling_on?).to be true
+    end
+
+    context 'when skip scheduling is on' do
+      it 'should be true by default' do
+        WitchDoctor.skip_virus_scan_scheduling = true
+        expect(Document.new.virus_scan_scheduling_on?).to be false
+        WitchDoctor.skip_virus_scan_scheduling = false
+      end
+    end
+  end
 end

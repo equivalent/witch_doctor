@@ -7,7 +7,7 @@ module WitchDoctor
     end
 
     def virus_scan_scheduling_on?
-      WitchDoctor.virus_scan_scheduling_on?
+      !WitchDoctor.skip_virus_scan_scheduling
     end
 
     module ClassMethods
