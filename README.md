@@ -53,7 +53,7 @@ end
 ```ruby
 # /config/initializers/witch_doctor.rb
 
-VirusScan.token = Rails
+WitchDoctor.token = Rails
   .application
   .secrets
   .fetch('antivirus_scan')

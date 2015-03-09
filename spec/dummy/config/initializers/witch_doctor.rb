@@ -1,1 +1,1 @@
-VirusScan.token = '1234'
+WitchDoctor.token = '1234'

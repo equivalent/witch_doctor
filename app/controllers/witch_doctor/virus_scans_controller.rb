@@ -53,7 +53,7 @@ module WitchDoctor
     def authenticate!
       if provided_token == nil
         render json: { errors: { request: ['Not Authenticated'] } }, status: 401
-      elsif provided_token.to_s == VirusScan.token
+      elsif provided_token.to_s == WitchDoctor.token
         yield
       else
         render json: { errors: { request: ['Not Authorized'] } }, status: 403
