@@ -61,10 +61,16 @@ module WitchDoctor
     end
 
     def provided_token
-      (request.headers['HTTP_AUTHORIZATION'] || request.headers['rack.session']['Authorization'])
+      authorization
         .to_s
         .match(/Token\s+(.*)/) { |m| m[1] } \
         || params[:token]
+    end
+
+    def authorization
+      (rails4 = request.headers['HTTP_AUTHORIZATION']) \
+        || (rails3 = request.headers['Authorization']) \
+        || (rspec = request.headers['rack.session']['Authorization'])
     end
 
     def virus_scan_params
