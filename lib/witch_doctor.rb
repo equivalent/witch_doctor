@@ -27,7 +27,7 @@ module WitchDoctor
 
     def controller_object_hash_generator
       @controller_object_hash_generator ||= begin
-        -> (object) { { json: { data: object.as_json } } }
+        ->(object) { { json: { data: object.as_json } } }
       end
     end
   end
