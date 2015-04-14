@@ -13,6 +13,14 @@ RSpec.describe WitchDoctor::VirusScansController, type: :controller do
   before(:all) { WitchDoctor.time_stamper = -> { Time.now.midnight } }
   after(:all)  { WitchDoctor.time_stamper = (reset_stamper_to_default = nil) }
 
+  let(:json_401) do
+    %q{{"errors":[{"title":"Unauthorized","detail":"Not Authenticated","status":"401"}]}}
+  end
+
+  let(:json_403) do
+    %q{{"errors":[{"title":"Forbidden","detail":"Not Authorized","status":"403"}]}}
+  end
+
   describe 'get index' do
     let!(:scheduled_virus_scan1) { create :virus_scan }
     let!(:clean_virus_scan) { create :virus_scan, :clean }
@@ -22,7 +30,7 @@ RSpec.describe WitchDoctor::VirusScansController, type: :controller do
       it 'responds 401 Not Authenticated' do
         get(:index, format: format)
         expect(response.status).to eq 401
-        expect(response.body).to eq %q{{"errors":{"request":["Not Authenticated"]}}}
+        expect(response.body).to eq json_401
       end
     end
 
@@ -30,7 +38,7 @@ RSpec.describe WitchDoctor::VirusScansController, type: :controller do
       it 'responds 403 with Not Authorized errors' do
         get(:index, token: 999, format: format)
         expect(response.status).to eq 403
-        expect(response.body).to eq %q{{"errors":{"request":["Not Authorized"]}}}
+        expect(response.body).to eq %q{{"errors":[{"title":"Forbidden","detail":"Not Authorized","status":"403"}]}}
       end
     end
 
@@ -42,7 +50,7 @@ RSpec.describe WitchDoctor::VirusScansController, type: :controller do
       it 'responds 200 with ASC scheduled virus scans' do
         trigger
         expect(response.status).to eq 200
-        expect(response.body).to eq("[#{scheduled_virus_scan1.to_json},#{scheduled_virus_scan2.to_json}]")
+        expect(response.body).to eq("{\"data\":[#{scheduled_virus_scan1.to_json},#{scheduled_virus_scan2.to_json}]}")
       end
 
       context 'using header token' do
@@ -62,7 +70,16 @@ RSpec.describe WitchDoctor::VirusScansController, type: :controller do
         before { trigger }
         let(:format) { 'html' }
         it{ expect(response.status).to eq 406 }
-        it{ expect(response.body).to eq %q{{"errors":{"request":["needs to be JSON request"]}}} }
+        it do
+          err_json = {
+            "errors"=>[
+              { "title"=>"Not Acceptable",
+                "detail"=>"needs to be JSON request",
+                "status"=>"406"}
+            ]
+          }
+          expect(JSON.parse response.body).to match err_json
+        end
       end
     end
   end
@@ -77,7 +94,7 @@ RSpec.describe WitchDoctor::VirusScansController, type: :controller do
           .not_to change { virus_scan.reload.scan_result }
 
         expect(response.status).to eq 401
-        expect(response.body).to eq %q{{"errors":{"request":["Not Authenticated"]}}}
+        expect(response.body).to eq json_401
       end
     end
 
@@ -87,7 +104,7 @@ RSpec.describe WitchDoctor::VirusScansController, type: :controller do
           .not_to change { virus_scan.reload.scan_result }
 
         expect(response.status).to eq 403
-        expect(response.body).to eq %q{{"errors":{"request":["Not Authorized"]}}}
+        expect(response.body).to eq json_403
       end
     end
 
@@ -109,12 +126,14 @@ RSpec.describe WitchDoctor::VirusScansController, type: :controller do
           .from(nil)
           .to('Clean')
 
-        expect(JSON.parse response.body).to eq({
+        expect(JSON.parse response.body).to match({
+          "data" => {
             "id" => virus_scan.id,
             "scan_result" => 'Clean',
             "scanned_at" => Time.now.midnight.utc.iso8601,
             "file_url" => "https://my-s3-bucket.dummy/uploads/documents/blank_pdf.pdf"
-          })
+          }
+        })
       end
 
       context 'sending missing params' do
@@ -124,7 +143,14 @@ RSpec.describe WitchDoctor::VirusScansController, type: :controller do
             .not_to change { virus_scan.reload.mount_point }
 
           expect(response.status).to eq 406
-          expect(response.body).to eq(%q{{"errors":{"request":["param is missing or the value is empty: virus_scan"]}}})
+          err_json = {
+            "errors" => [
+              { "title"=>"Not Acceptable",
+                "detail"=>"param is missing or the value is empty: virus_scan",
+                "status"=>"406" }
+            ]
+          }
+          expect(JSON.parse(response.body)).to match(err_json)
         end
       end
 
@@ -135,7 +161,15 @@ RSpec.describe WitchDoctor::VirusScansController, type: :controller do
             .not_to change { virus_scan.reload.mount_point }
 
           expect(response.status).to eq 400
-          expect(response.body).to eq(%q{{"errors":{"scan_result":["is not included in the list"]}}})
+
+          err_json = {
+            "errors" => [
+              { 'title' => "Bad Request",
+                'detail' => "scan_result is not included in the list",
+                'status' => '400' }
+            ]
+          }
+          expect(JSON.parse(response.body)).to match(err_json)
         end
       end
 
@@ -146,7 +180,15 @@ RSpec.describe WitchDoctor::VirusScansController, type: :controller do
             .not_to change { virus_scan.reload.scan_result }
 
          expect(response.status).to eq 406
-         expect(response.body).to eq '{"errors":{"request":["needs to be JSON request"]}}'
+
+         err_json = {
+           "errors"=> [
+             { "title"=>"Not Acceptable",
+               "detail"=>"needs to be JSON request",
+               "status"=>"406" }
+           ]
+         }
+         expect(JSON.parse response.body).to match err_json
         end
       end
     end
