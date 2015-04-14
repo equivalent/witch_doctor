@@ -15,7 +15,7 @@ module WitchDoctor
 
         respond_to do |format|
           format.json do
-            render_json(@virus_scans)
+            render WitchDoctor.controller_object_hash_generator.call(@virus_scans)
           end
           format.html do
             json_406 = { title: "Not Acceptable",
@@ -40,7 +40,7 @@ module WitchDoctor
                              status: '400' }
                 render json: { errors: [json_400] }, status: 400
               else
-                render_json(@virus_scan.reload)
+                render WitchDoctor.controller_object_hash_generator.call(@virus_scan.reload)
               end
             rescue ActionController::ParameterMissing => e
               json_406 = { title: "Not Acceptable",
@@ -104,14 +104,6 @@ module WitchDoctor
                    detail: "Incorrect format",
                    status: '406' }
       render json: { errors: [json_406] }, status: 406
-    end
-
-    def render_json(object)
-      if Object.const_defined?('ActiveModel::Serializer')
-        render json: object
-      else
-        render json: { data: object.as_json }
-      end
     end
   end
 end

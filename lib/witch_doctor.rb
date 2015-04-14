@@ -6,7 +6,8 @@ module WitchDoctor
   TokenNotSpecified = Class.new(StandardError)
 
   class << self
-    attr_writer :time_stamper, :virus_scan_limit, :token, :skip_virus_scan_scheduling
+    attr_writer :time_stamper, :virus_scan_limit, :token,
+      :skip_virus_scan_scheduling, :controller_object_hash_generator
 
     def time_stamper
       @time_stamper ||= -> { Time.now }
@@ -22,6 +23,12 @@ module WitchDoctor
 
     def skip_virus_scan_scheduling
       !!@skip_virus_scan_scheduling
+    end
+
+    def controller_object_hash_generator
+      @controller_object_hash_generator ||= begin
+        -> (object) { { json: { data: object.as_json } } }
+      end
     end
   end
 end
