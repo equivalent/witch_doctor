@@ -12,12 +12,16 @@ module WitchDoctor
           .not_scanned
           .limit(WitchDoctor.virus_scan_limit)
 
+
         respond_to do |format|
           format.json do
-            render json: @virus_scans
+            render WitchDoctor.controller_object_hash_generator.call(@virus_scans)
           end
           format.html do
-            render json: { errors: { request: ['needs to be JSON request'] } }, status: 406
+            json_406 = { title: "Not Acceptable",
+                         detail: 'needs to be JSON request',
+                         status: '406' }
+            render json: { errors: [json_406] }, status: 406
           end
         end
       end
@@ -31,18 +35,30 @@ module WitchDoctor
               @virus_scan = VirusScan.where(scan_result: nil).find params[:id]
               @virus_scan.update_attributes virus_scan_params# as: :scan_update
               if @virus_scan.errors.any?
-                render json: { errors:  @virus_scan.errors }, status: 400
+                json_400 = { title: "Bad Request",
+                             detail: @virus_scan.errors.first.join(' '),
+                             status: '400' }
+                render json: { errors: [json_400] }, status: 400
               else
-                render json: @virus_scan.reload
+                render WitchDoctor.controller_object_hash_generator.call(@virus_scan.reload)
               end
             rescue ActionController::ParameterMissing => e
-              render json: { errors: { request: [e.to_s] } }, status: 406
+              json_406 = { title: "Not Acceptable",
+                           detail: e.to_s,
+                           status: '406' }
+              render json: { errors: [json_406] }, status: 406
             rescue ActiveRecord::RecordNotFound => e
-              render json: { errors: { request: ['Record not found or already scanned'] } }, status: 404
+              json_404 = { title: "Not Found",
+                           detail: 'Record not found or already scanned',
+                           status:'404' }
+              render json: { errors: [json_404] }, status: 404
             end
           end
           format.html do
-            render json: { errors: { request: ['needs to be JSON request'] } }, status: 406
+            err_json = { title: 'Not Acceptable',
+                         detail: 'needs to be JSON request',
+                         status: '406' }
+            render json: { errors: [err_json] }, status: 406
           end
         end
       end
@@ -52,11 +68,17 @@ module WitchDoctor
 
     def authenticate!
       if provided_token == nil
-        render json: { errors: { request: ['Not Authenticated'] } }, status: 401
+        unauthorized = {title: 'Unauthorized',
+                        detail: 'Not Authenticated',
+                        status: '401' }
+        render json: { errors: [unauthorized] }, status: 401
       elsif provided_token.to_s == WitchDoctor.token
         yield
       else
-        render json: { errors: { request: ['Not Authorized'] } }, status: 403
+        forbidden = { title: 'Forbidden',
+                      detail: 'Not Authorized',
+                      status: '403' }
+        render json: { errors: [forbidden] }, status: 403
       end
     end
 
@@ -78,12 +100,10 @@ module WitchDoctor
     end
 
     def incorrect_format
-      render json: { errors: { request: ["Incorrect format"] } }, status: 406
-    end
-
-    # when used in app with ActiveModel::Serializer this will prevent it to do root JSON
-    def default_serializer_options
-        {root: false}
+      json_406 = { title: 'Not Acceptable',
+                   detail: "Incorrect format",
+                   status: '406' }
+      render json: { errors: [json_406] }, status: 406
     end
   end
 end
