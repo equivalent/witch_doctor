@@ -13,6 +13,7 @@ Engine was designed to work alongside [virus_scan_service gem](https://github.co
 to which it provides a list of VirusScans. These are created upon file resource
 create / update events.
 
+API is trying to comply with [JSON API standard](http://jsonapi.org/)
 
 ## CarrierWave
 
@@ -175,16 +176,18 @@ RSpec.describe 'VirusScans', :type => :request do
       expect(response.status).to be 200
     end
 
-    it 'expect the JSON response to be Array' do
-      expect(JSON.parse response.body).to eq [
-        {
-          "id" => virus_scan.id,
-          "scan_result" => nil,
-          "scanned_at" => nil,
-          "file_url" => "/uploads/documents/#{virus_scan.id}/passport.jpg" # don't care about file storage (tests)
-                                                                           # as virus scans are needed only on s3
-        }
-      ]
+    it 'expect the JSON response to be JSON API hash' do
+      expect(JSON.parse response.body).to eq({
+        "data" => [
+          {
+            "id" => virus_scan.id,
+            "scan_result" => nil,
+            "scanned_at" => nil,
+            "file_url" => "/uploads/documents/#{virus_scan.id}/passport.jpg" # don't care about file storage (tests)
+                                                                             # as virus scans are needed only on s3
+          }
+        ]
+      })
     end
   end
 
@@ -204,13 +207,14 @@ RSpec.describe 'VirusScans', :type => :request do
 
     it 'expect to update existing virus_scan' do
       expect(JSON.parse response.body).to eq({
+        "data" => {
           "id" => virus_scan.id,
           "scan_result" => 'Clean',
           "scanned_at" => Time.now.midnight.utc.iso8601,
           "file_url" => "/uploads/documents/#{virus_scan.id}/passport.jpg"
-        })
+        }
+      })
     end
   end
 end
 ```
-
