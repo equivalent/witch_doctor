@@ -16,8 +16,8 @@ ActiveRecord::Schema.define(version: 20150209121818) do
   create_table "documents", force: true do |t|
     t.string   "title"
     t.string   "attachment"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "virus_scans", force: true do |t|
@@ -26,8 +26,8 @@ ActiveRecord::Schema.define(version: 20150209121818) do
     t.string   "scan_result"
     t.string   "mount_point"
     t.datetime "scanned_at"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
 end
