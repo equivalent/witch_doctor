@@ -63,4 +63,14 @@ describe VirusScan do
       end
     end
   end
+
+  describe '#unschedule_attachment_virus_scan' do
+    let!(:document) { create :document, :with_attachment }
+    it 'unschedules after destroy' do
+      expect(VirusScan.count).to eq 1
+      document.destroy
+      expect(VirusScan.count).to eq 0
+    end
+
+  end
 end

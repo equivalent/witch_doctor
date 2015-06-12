@@ -15,6 +15,11 @@ module WitchDoctor
         mount_point = options.fetch(:on)
 
         after_save "schedule_#{mount_point}_virus_scan", if: ["schedule_#{mount_point}_virus_scan?", :virus_scan_scheduling_on?]
+        after_destroy "unschedule_#{mount_point}_virus_scan"
+
+        define_method("unschedule_#{mount_point}_virus_scan") do
+          virus_scans.where(mount_point: mount_point.to_s).each {|vs| vs.destroy}
+        end
 
         define_method("schedule_#{mount_point}_virus_scan") do
           virus_scans.create! do |vs|
