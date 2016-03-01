@@ -9,9 +9,9 @@ RSpec.describe WitchDoctor::Antivirus do
     let(:virus_scan) { double scan_result: nil, scanned_at: nil, mount_point: 'avatar' }
 
     it { expect(subject.checked?).to be false }
-    it { expect(subject.infected?).to be false }
-    it { expect(subject.clean?).to be false }
-    it { expect(subject.error?).to be false }
+    it { expect { subject.infected? }.to throw_symbol(:file_not_scanned) }
+    it { expect { subject.clean? }.to throw_symbol(:file_not_scanned) }
+    it { expect { subject.error? }.to throw_symbol(:file_not_scanned) }
 
     context 'along different mont point virus scan' do
       let(:virus_scan2) { double scan_result: 'Clean', scanned_at: Time.now - 3600, mount_point: 'different'}
