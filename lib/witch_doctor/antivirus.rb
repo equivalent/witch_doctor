@@ -20,17 +20,15 @@ module WitchDoctor
     end
 
     def infected?
-      !clean? && !error?
+      checked? && !clean? && !error?
     end
 
     def error?
-      throw :file_not_scanned unless checked?
-      latest_scan.scan_result == 'FileDownloadError'
+      checked? && latest_scan.scan_result == 'FileDownloadError'
     end
 
     def clean?
-      throw :file_not_scanned unless checked?
-      latest_scan.scan_result == 'Clean'
+      checked? && latest_scan.scan_result == 'Clean'
     end
   end
 end
