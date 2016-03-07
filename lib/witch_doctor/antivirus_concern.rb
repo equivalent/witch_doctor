@@ -14,7 +14,7 @@ module WitchDoctor
       def schedule_virus_scan(options)
         mount_point = options.fetch(:on)
 
-        after_save "schedule_#{mount_point}_virus_scan", if: "schedule_#{mount_point}_virus_scan?"
+        after_save "schedule_#{mount_point}_virus_scan", if: ["schedule_#{mount_point}_virus_scan?", :virus_scan_scheduling_on?]
         after_destroy "unschedule_#{mount_point}_virus_scan"
 
         define_method("unschedule_#{mount_point}_virus_scan") do
@@ -24,12 +24,6 @@ module WitchDoctor
         define_method("schedule_#{mount_point}_virus_scan") do
           virus_scans.create! do |vs|
             vs.mount_point = mount_point.to_s
-            # This is especially useful for integration testing, since your application may
-            # make assumptions (e.g. in the views) about the existence of a virus scan
-            unless virus_scan_scheduling_on?
-              vs.scan_result = 'Clean'
-              vs.scanned_at = Time.now
-            end
           end
         end
 

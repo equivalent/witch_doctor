@@ -9,18 +9,22 @@ module WitchDoctor
     end
 
     def latest_scan
-      resource
+      @latest_scan ||= resource
         .virus_scans
         .select { |vs| vs.mount_point == mount_point }
         .last
     end
 
+    def scheduled?
+      !latest_scan.nil?
+    end
+
     def checked?
-      latest_scan.scan_result.present?
+      scheduled? && latest_scan.scan_result.present?
     end
 
     def infected?
-      checked? && !clean? && !error?
+      checked? && latest_scan.scan_result == 'VirusInfected'
     end
 
     def error?

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    witch_doctor (0.6.0)
+    witch_doctor (0.7.0)
 
 GEM
   remote: https://rubygems.org/
