@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    witch_doctor (0.7.0)
+    witch_doctor (0.7.1)
 
 GEM
   remote: https://rubygems.org/
@@ -133,4 +133,4 @@ DEPENDENCIES
   witch_doctor!
 
 BUNDLED WITH
-   1.11.2
+   1.13.2
